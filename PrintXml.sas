@@ -1,13 +1,4 @@
 /*!
-*   {Macro Description}.
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_LIB\CRF Macro Library\
-*
-*   @author Yiwen Luo
-*   @created
-*
-*/
- 
 /********************************************************************************************************************
 Macro name: 
 
@@ -17,12 +8,6 @@ Creation date:
 
 SAS version: 9.4
 
-File Location:
-
-Validated By:
-
-Date Validated:
-
 Purpose: 
 
 Parameters(required):	
@@ -31,23 +16,10 @@ Parameters(optional):
 
 Sub-macros called: 
 
-Data sets created: 
-
-Notes: 
-
 Sample Macro call: 
 
 *************************************************************************************************************/
- 
- 
-/**
-*   {Macro Description}.
-*
-*   @param 
-*
-*   @return
-*
-*/
+
 %macro PrintXml(file=,printds=,group=,groupvalue=,grouplabel=,author=YLuo,font_sz=9,cellwd=13);
 
 data &printds._xml;
