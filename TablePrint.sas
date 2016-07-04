@@ -1,13 +1,3 @@
-/*!
-*   {Macro Description}.
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_LIB\CRF Macro Library\
-*
-*   @author Yiwen Luo
-*   @created
-*
-*/
- 
 /********************************************************************************************************************
 Macro name: TablePrint
 
@@ -38,17 +28,6 @@ Notes:
 Sample Macro call: 
 
 *************************************************************************************************************/
- 
- 
-/**
-*   {Macro Description}.
-*
-*   @param 
-*
-*   @return
-*
-*/
-
 
 %macro TablePrint(ds=,dic=,groupds=,group=,out=,id=desid,sheet_name=);
 proc sort data=&ds;by &id;run;
