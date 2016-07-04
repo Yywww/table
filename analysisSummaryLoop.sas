@@ -1,13 +1,3 @@
-/*!
-*   {Macro Description}.
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_IN_PROGRESS\Macros for analysisSummaryLoop\
-*
-*   @author Yiwen Luo
-*   @created Thursday, March 10, 2016 13:20:13
-*
-*/
- 
 /********************************************************************************************************************
 Macro name: AnalysisSummaryLoop
 Written by: Yiwen Luo
@@ -20,14 +10,14 @@ Date Validated:
 
 Purpose: Execute user assigned macro loop over a list of variables
 Parameters(required):	dataset=
-						groupvar=
-						out=
-						summary_macro=
+			groupvar=
+			out=
+			summary_macro=
 
 Parameters(optional):	varlist=
-						varexclude=
-						analysis_macro=
-						outputfmt=
+			varexclude=
+			analysis_macro=
+			outputfmt=
 
 Sub-macros called: % count()
 
@@ -38,20 +28,6 @@ Notes: The analysis_macro and summary_macro this macro calls has to have specifi
 Sample Macro call: 
 
 *************************************************************************************************************/
-
-/**
- * Execute user assigned macro loop over a list of variables
- *
- * @param dataset       	Input dataset name
- * @param varlist       	variables need to summarize and analyze
- * @param varexclude		variables that in the variable list which result are not required
- * @param groupvar			group variable
- * @param out				name of output dataset
- * @param summary_macro 	macro that used to output summary result
- * @param analysis_macro	macro that used to output analysis result
- * @param outputfmt			output format. see guideline file for more information
- * @return a dataset name by out parameter
- */ 
 
 %macro analysisSummaryLoop(dataset=, varlist=, varexclude=, groupvar=, out=, summary_macro=, analysis_macro= ,outputfmt=);
 
@@ -145,8 +121,6 @@ ods select all;
 %symdel Nvar / nowarn;
 
 %MEND;
-
-
 
 /* **** End of Program **** */
 /* **** by Yiwen Luo **** */
