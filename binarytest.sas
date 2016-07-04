@@ -1,14 +1,3 @@
-/*!
-*   Conducts Chisq or Fisher exact test for a binary variable over a grouping variable.
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_IN_PROGRESS\Macros for analysisSummaryLoop
-*
-*   @author Y Luo
-*   @author C Litherland
-*   @created 10AUGUST2015
-*
-*/
-
 /* ******************************************************************************************************************** */
 /*    Macro name: binarytest                                                                                            */
 /*    Written by: Yiwen Luo                                                                                             */
@@ -32,24 +21,9 @@
 /**  [1]      01APRIL2016     Clitherland     add checks for issues that arise with datasets are not created.           */
 /* ********************************************************************************************************************** */
 
-/**
- * Gives the appropriate test statistic of one binary variable. 
- *
- * @param dataset input dataset
- * @param dependentvar variable to be analyzed
- * @param groupvar group variable
- * @param groupvar_refindex index for group variable reference
- * @param out output dataset
- */ 
-
-
 %macro binarytest(dataset=, dependentvar=, groupvar=, groupvar_refindex=0, out=, outputfmt=);
-/* CCL Note [01APRIL2016]: Adding documentation macros and logic / data integrity checks */
 %MacroNoteToLog;    
 
-/*  ==============================================================================================================  */
-/* @section Error Checking.                                                                                         */
-/*  ==============================================================================================================  */
 
     /*dependent variable and group variable can not be the same*/
     %if %upcase(&dependentvar)=%upcase(&groupvar) %then %do;
@@ -298,7 +272,6 @@ proc datasets library=work nolist nodetails;
            rr rrrd %range(to=&nminusone_level, opre=rr_string) %range(to=&nminusone_level, opre=rd_string);
 quit;
 
-/* CCL Note [01APRIL2016]: Delete global macro variables created. */
     %SYMDEL nminusone_level; 
 
     ods select all;
