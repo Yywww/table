@@ -1,11 +1,3 @@
-/*!
- * Give summary information for one binary variable by a group variable. 
- * <br>
- * <b> Macro Location: </b> P:\DataAnalysis\MACRO_LIB\CRF Macro Library\DataSummaryMacros
- *
- * @author Yiwen Luo
- * @created Monday, August 10, 2015 09:18:11
- */
 /********************************************************************************************************************
             Macro name: binarysummary
             Written by: Yiwen Luo
@@ -29,17 +21,6 @@
      Sample Macro call: % binarysummary(ds = testset, groupvar = vessel_disease, var = male, out = try)
 
 *************************************************************************************************************/
-/**
- * Gives summary information (n/N %) for one binary variable by a grouping variable.
- *
- * @param dataset       Input dataset
- * @param groupvar      Grouping variable
- * @param dependentvar  Binary variable to be analyzed
- * @param out           Output dataset
- * @param outputfmt     Output dataset
- * 
- */ 
-
 
 %macro binarysummary(dataset=, groupvar=, dependentvar=, out=, outputfmt=);
     %MacroNoteToLog;
