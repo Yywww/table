@@ -1,13 +1,3 @@
-/*!
-*   Print table in rtf file, table must be created by %TablePrint macro
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_IN_PROGRESS\Macros for analysisSummaryLoop
-*
-*   @author Yiwen Luo
-*   @created
-*
-*/
- 
 /********************************************************************************************************************
 Macro name: PrintRtf
 
@@ -17,51 +7,24 @@ Creation date: Tuesday, March 29, 2016 17:30:30
 
 SAS version: 9.4
 
-File Location:P:\DataAnalysis\MACRO_IN_PROGRESS\Macros for analysisSummaryLoop
-
-Validated By:
-
-Date Validated:
-
 Purpose: Print table in rtf file, table must be created by %TablePrint macro
 
 Parameters(required):	file=,
-						printds=,
-						group=,
-						groupvalue=,
-						grouplabel=,
+			printds=,
+			group=,
+			groupvalue=,
+			grouplabel=,
 Parameters(optional):	author=YLuo,
-						font_sz=9,
-						cellwd=13
+			font_sz=9,
+			cellwd=13
 
 
 Sub-macros called: %footnote
-
-Data sets created: 
-
-Notes: 
 
 Sample Macro call: 
 
 *************************************************************************************************************/
  
- 
-/**
-*   Print table in rtf file, table must be created by %TablePrint macro
-*
-*   @param file destination and filename for desired rtf output
-*   @param printds dataset created by %TablePrint
-*   @param group group variable
-*   @param groupvalue all possible value of group value seperated by '#'. For example, if group variable has level '1' and '0', then should specify groupvalue=1#2
-*   @param grouplabel labels that you want to print for different level of group variable, seperated by '#'. The order of label has the same as order of value of that group variable. For example, grouplavel=NON-left main bifurcation treated with 1 stent#NON-left main bifurcation treated with 2 stents#no bifurcation lesion
-*	@param author author of this table, default to YLuo:-)
-*	@param font_size font_size of table, default to 9. Please enter number not with unit
-*	@param cellwd cell width for the table, default to 13%. Please enter number not wiht unit.
-*
-*   @return a RTF file
-*
-*/
-
 %macro PrintRtf(file=,printds=,group=,groupvalue=,grouplabel=,author=YLuo,font_sz=9,cellwd=13);
 
 %let Ngroup=%sysfunc(countw(%superq(groupvalue),'#'));
