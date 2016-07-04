@@ -1,12 +1,3 @@
-/*!
-*   Calculates summary statistics for a continuous variable.
-*   <br>
-*   <b> Macro Location: </b> P:\DataAnalysis\MACRO_LIB\
-*
-*   @author     YLuo
-*   @created    02JUNE2015
-*
-*/
 /********************************************************************************************************************
             Macro name: STAT
             Written by: Yiwen Luo
