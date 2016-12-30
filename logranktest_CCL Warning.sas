@@ -1,3 +1,5 @@
+/* CCL Note [01SEPTEMBER2015]: I don't think this is the appropriate macro for this - logranktest should conduct a logrank test... not get HR. */
+
 /*!
  * This file collects demographic information from end users.
  * Whenever the user deletes a record from the demographic database,
@@ -6,6 +8,7 @@
  * @author 
  * @created 
  */
+
 /********************************************************************************************************************
 Macro name: logranktest
 

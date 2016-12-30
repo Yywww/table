@@ -1,3 +1,11 @@
+/*!
+ * Give summary information for one binary variable by a group variable. 
+ * <br>
+ * <b> Macro Location: </b> P:\DataAnalysis\MACRO_LIB\CRF Macro Library\DataSummaryMacros
+ *
+ * @author Yiwen Luo
+ * @created Monday, August 10, 2015 09:18:11
+ */
 /********************************************************************************************************************
             Macro name: binarysummary
             Written by: Yiwen Luo
@@ -21,77 +29,49 @@
      Sample Macro call: % binarysummary(ds = testset, groupvar = vessel_disease, var = male, out = try)
 
 *************************************************************************************************************/
+/**
+ * Gives summary information (n/N %) for one binary variable by a grouping variable.
+ *
+ * @param ds        Input dataset
+ * @param groupvar  Grouping variable
+ * @param var       Binary variable to be analyzed
+ * @param out       Output dataset
+ * 
+ */ 
 
-%macro binarysummary(dataset=, groupvar=, dependentvar=, out=, outputfmt=);
-    %MacroNoteToLog;
-    ods select NONE;
-/*  ==============================================================================================================  */
-/* @section Error checks                                                                                            */
-/*  ==============================================================================================================  */
-    %if %superq(DATASET)=%str() %then %do;
-        %put %str(E)RROR: No argument specified for DATASET.;
-        %return;
-    %end;
-    %if %superq(GROUPVAR)=%str() %then %do;
-        %put %str(E)RROR: No argument specified for GROUPVAR.;
-        %return;
-    %end;
-    %if %superq(DEPENDENTVAR)=%str() %then %do;
-        %put %str(E)RROR: No argument specified for DEPENDENTVAR.;
-        %return;
-    %end;
-    %if %superq(OUT)=%str() %then %do;
-        %put %str(E)RROR: No argument specified for OUT.;
-        %return;
-    %end;
-    %IF %varexist(ds=&dataset, var=&groupvar) = 0 %THEN %DO;
-        %PUT %str(E)RROR: &groupvar is not in &dataset.;
-        %return;
-    %END;
-    %IF %varexist(ds=&dataset, var=&dependentvar) = 0 %THEN %DO;
-        %PUT %str(E)RROR: &dependentvar is not in &dataset.;
-        %return;
-    %END;
-    /* Check that the dependent variable is actually binary. */
-    %dstCnt(ds=&dataset, dstvar=&dependentvar, outvar=bincheck);
-    %IF &bincheck > 2 %THEN %DO;
-        %PUT %str(E)RROR: &dependentvar has more than 2 values - do not use binarysummary.;
-        %return;
-    %END;
-    %symdel bincheck / nowarn;
 
+%macro binarysummary(ds=,groupvar=,var=,out=);
+/*    %MacroNoteToLog;*/
+
+    /* CCL Note [17AUGUST2015]: Add checks and escape routes for macro */
 /* CCL Note [01SEPTEMBER2015]: Add check for variable name that is "too" long - if it is, maybe give it a shorter name? */
 
-    %getlevel(&dataset, out=&groupvar._info, factor=&groupvar);
-/*	%let n_level = %nobs(&groupvar._info);*/
-	%count(&groupvar._info, macroout=n_level);
-
-    %DO noflevel=1 %TO &n_level;
+    %getlevel(&ds, out=&groupvar._info, factor=&groupvar);
+	%let n_level = %nobs(&groupvar._info);
+    %do noflevel=1 %to &n_level;/*no i*/
     data _null_;
         set &groupvar._info(firstobs=&noflevel obs=&noflevel);
         call symput('currentfac', factorvalue);
     run;
 
-	%freqgroup(ds=&dataset, var=&dependentvar, groupvar=&groupvar, index=&currentfac, out=var_&noflevel);
-	%END;
+	%freqgroup(ds=&ds, var=&var, groupvar=&groupvar, index=&currentfac, out=var_&noflevel);
+	%end;
 
 	data new;
-		set &dataset;
-		keep &dependentvar;
+		set &ds;
+		keep &var;
 	run;
 
-	%count(new, macroout=N)
+	%count(new,macroout=N)
 
 	data _count;
 		set new;
-		where &dependentvar=1;
+		where &var=1;
 	run;
-
-	%count(_count, macroout=Nm)
-
+	%count(_count,macroout=Nm)
 	data total;
-		length variable $ 30 statistics $ 50 total $ 20;
-		Variable="&dependentvar";
+		length variable $30 statistics $50;
+		Variable="&var";
 		Statistics="n/N (%)";
 /*		Total=cat("&Nm / &N (", strip(put(&Nm/&N, percent7.1)), ")");*/
 		Total=cat("%cmpres(&Nm) / %cmpres(&N) (", strip(put(&Nm/&N, percent7.1)), ")");
@@ -102,16 +82,9 @@
 	by variable;
 	run;
 
-/*  ==============================================================================================================  */
-/* @section Delete intermediate datasets and clear global macro variables.                                          */
-/*  ==============================================================================================================  */
-
 	proc datasets library=work nolist nodetails;
 		delete %range(to=&n_level., opre=var_) new total &groupvar._info _count;
 	quit;
-
-    %symdel N Nm n_level/ nowarn;
-    ODS SELECT ALL;
 %mend binarysummary;
 
 

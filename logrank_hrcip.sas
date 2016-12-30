@@ -28,11 +28,11 @@ Sample Macro call: %logrank_hrcip(dataset=analysis,var=dth,timevar=dthdays,group
 *************************************************************************************************************/
 
 
-%macro logrank_hrcip(dataset=,dependentvar=,groupvar=,out=hazrad_ratio_out,outputfmt=);
+%macro logrank_hrcip(dataset=,var=,timevar=,groupvar=,out=hazrad_ratio_out);
 
 proc phreg data=&dataset;
 	class &groupvar/ param=ref desc;
-	model &dependentvar.days*&dependentvar(0)= &groupvar / ties=efron type3(score);
+	model &timevar*&var(0)= &groupvar / ties=efron type3(score);
 	hazardratio &groupvar;
 	ods output ParameterEstimates=hazardp HazardRatios=hazardci;
 run;
@@ -40,7 +40,7 @@ run;
 data hp;
 	set hazardp;
 	Pvalue=put(ProbChiSq,pvalue6.4);
-	variable="&dependentvar";
+	variable="&var";
 	keep variable Pvalue;
 run;
 
@@ -48,14 +48,13 @@ data hci;
 	set hazardci;
 	length hazardci $20;
 	hazardci=cats(put(HazardRatio,best4.),"[",put(WaldLower,best4.),",",put(WaldUpper,best4.),"]");
-	variable="&dependentvar";
+	variable="&var";
 	keep variable hazardci;
 run;
 	 
 data &out;
 	merge hp hci;
 	by variable;
-	if index(hazardci,'0[0,]') ge 1 then hazardci='N/A';
 run;
 
 proc datasets library=work;

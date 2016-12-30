@@ -1,3 +1,12 @@
+/*!
+*   Calculates summary statistics for a continuous variable
+*   <br>
+*   <b> Macro Location: <\b> P:\DataAnalysis\MACRO_LIB\
+*
+*   @author     YLuo
+*   @created    02JUNE2015
+*
+*/
 /********************************************************************************************************************
             Macro name: STAT
             Written by: Yiwen Luo
@@ -21,8 +30,8 @@
 *************************************************************************************************************/
 
 %MACRO STAT(dataset=, var=, outdata=, outvar=, outfmt=5.1) / des="Creates summary statistics for a continuous variable";
-    %MacroNoteToLog;
-     ods select none;
+/*    %MacroNoteToLog;*/
+
      proc means data=&dataset alpha=0.05 n median mean std min max Q1 Q3 lclm uclm;
          var &var;
          output out=_Summ n=n median=median mean=mean std=std min=min max=max Q1=Q1 Q3=Q3 lclm=lclm uclm=uclm;
@@ -75,8 +84,7 @@
     run;
 
     /* Delete intermediate datasets */
-    proc datasets nolist nodetails; 
+    proc datasets nolist; 
         delete _Summ; 
     quit;
-    ods select all;
 %MEND STAT; 

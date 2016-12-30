@@ -33,7 +33,7 @@ Sample Macro call: % logranksummary(dataset=testset, var=mace, timevar=macedays,
 
 *************************************************************************************************************/
 /**
- * Returns dataset with KM estimates for time to event variable by a group variable(THis macro is for %varloop to use)
+ * Returns dataset with KM estimates for time to event variable by a group variable 
  *
  * @param dataset       Input dataset
  * @param groupvar      Group variable
@@ -44,27 +44,22 @@ Sample Macro call: % logranksummary(dataset=testset, var=mace, timevar=macedays,
  * 
  */ 
 
-
-%macro logranksummary(dataset=, dependentvar=, groupvar=, out=,outputfmt=);
-
-	%MacroNoteToLog; 
-
-	%let timevar=&dependentvar.days;
+%macro logranksummary(dataset=, var=, timevar=, censor_val=0, groupvar=, out=);
     ods output ProductLimitEstimates=lrfreqg;
 	proc lifetest data=&dataset method=km;
-		time &timevar * &dependentvar(0);
+		time &timevar * &var. (&censor_val.);
 		strata &groupvar;
 	run;
 
     ods output ProductLimitEstimates=lrfreqt;
 	proc lifetest data=&dataset method=km;
-		time &timevar * &dependentvar(0);	
+		time &timevar * &var ( &censor_val. );	
 	run;
 
 	%getlevel(&dataset, out=&groupvar._info, factor=&groupvar);
-/*	%LET n_level = %nobs(&groupvar._info);*/
-	%count(&groupvar._info,macroout=n_level)
-	%DO noflevel = 1 %TO &n_level;
+	%LET n_level = %nobs(&groupvar._info);
+
+	%DO noflevel=1 %TO &n_level;
 	    data _null_;
 	        set &groupvar._info(firstobs=&noflevel obs=&noflevel);
 	        call symput('currentfac', strip(factorvalue));
@@ -73,22 +68,22 @@ Sample Macro call: % logranksummary(dataset=testset, var=mace, timevar=macedays,
 		data logrank_&noflevel;
 			set lrfreqg(where=(Failure^=. and &groupvar=&currentfac)) end=lastobs;
 			if lastobs;
-			length variable $30 statistics $50;
+			length variable $30;
+
 			&groupvar._&currentfac = cat(strip(put(Failure, percent10.1)), ' (', strip(put(Failed, 8.)), ')');
-			statistics = "%(N)";
-			variable = "&dependentvar";
-			keep variable &groupvar._&currentfac statistics;
+			variable = "&var";
+			keep variable &groupvar._&currentfac;
 		run;
 	%END;
 
 	data logrank_total;
 		set lrfreqt(where=(Failure^=.)) end=lastobs;
 		if lastobs;
-		length variable $30 statistics $50;
+		length variable $30;
+
 		total = cat(strip(put(Failure, percent10.1)), ' (', strip(put(Failed, 8.)), ')');
-		statistics = "%(N)";
-		variable = "&dependentvar";
-		keep total variable statistics;
+		variable = "&var";
+		keep total variable;
 	run;
 
 	data &out;
@@ -105,4 +100,5 @@ Sample Macro call: % logranksummary(dataset=testset, var=mace, timevar=macedays,
 
 /* **** End of Program **** */
 /* **** by Yiwen Luo **** */
-/*Friday, November 20, 2015 14:21:14*/
+/*Wednesday, August 12, 2015 10:18:51*/
+

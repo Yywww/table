@@ -35,7 +35,7 @@
  * @param macrotouse    Name of macro want to be used for variable list provided
  */ 
 
-%macro varloop(dataset=, varlist=, varexclude=, groupvar=, out=, summary_macro=, analysis_macro= ,outputfmt=);
+%macro varloop(dataset=, varlist=, varexclude=, groupvar=, out=, summary_macro=, analysis_macro=  )
 
 %if %length(&varlist)=0 %then %do;
 	%if %length(&varexclude)=0 %then %do; 
@@ -86,37 +86,29 @@ quit;
 
 
 %do i=1 %to &Nvar;
-		data _null_;
-		set varname(firstobs=&i obs=&i);
-		call symput('curv',strip(variable));
-		run;
-		%if %length(&summary_macro)^=0 %then %do;
-				%&summary_macro.(dataset=&dataset, dependentvar=&curv, groupvar=&groupvar, out=&curv.summ, outputfmt=&outputfmt)
-				%if %length(&analysis_macro)^=0 %then %do;
-						%&analysis_macro.(dataset=&dataset, dependentvar=&curv, groupvar=&groupvar, out=&curv.test, outputfmt=&outputfmt)
-						data &curv;
-							merge &curv.summ &curv.test;
-							by variable;
-						run;
-				%end;
-				%else %do;
-						data &curv;
-							set &curv.summ;
-						run;
-				%end;
-		%end;
-		proc datasets library=work;
-			delete &curv.summ &curv.test;
-		run;
+    data _null_;
+    	set varname(firstobs=&i obs=&i);
+    	call symput('curv',variable);
+    run;
+	%&summary_macro(dataset=&dataset, dependentvar=&curv,groupvar=&groupvar, out=&curv,outputfmt=)
+	%&summary_macro(ds=&dataset, groupvar=&groupvar, var=&curr_var, out=&curr_var.summary)
+    %binarytest(dataset=&dataset, groupvar=&groupvar, var=&curr_var, out=&curr_var.test, groupvar_refindex=&groupvar_refindex)
+
 %end;
 
 data &out;
 	set &in;
 run;
 
-proc datasets library=work;
-	delete &in varname new;
+
+
+
+
+/* Delete datasets and global macro variables */
+proc datasets library=work nolist nodetails;
+	delete varname new &in;
 quit;
+
 %symdel Nvar N / nowarn;
 
 %MEND varloop;

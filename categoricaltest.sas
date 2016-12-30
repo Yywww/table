@@ -1,5 +1,5 @@
 /*!
- * Give test statistics to a categorical variable.
+ * Give test statistics to a categorical variable
  *
  * @author Yiwen Luo
  * @created Wednesday, August 12, 2015 13:34:40
@@ -33,19 +33,17 @@ Sample Macro call: %categoricaltest(dataset=testset,groupvar=vessel_disease,var=
 
 *************************************************************************************************************/
 /**
- * Conducts a chi square test for two categorical variables.  DOES NOT check for cells < 5.  
+ * Description:
  *
- * @param dataset   input dataset
- * @param dependentvar       variable to be analyzed
- * @param groupvar  group variable
- * @param out       output dataset
- * @param outputftm   output format
+ * @param dataset input dataset
+ * @param var variable to be analyzed
+ * @param groupvar group variable
+ * @param out output dataset
  */ 
-
-%macro categoricaltest(dataset=, dependentvar=, groupvar=, out=, outputfmt=);
+%macro categoricaltest_chisq(dataset=,var=,groupvar=,out=);
 
 proc freq data=&dataset order=data;
-	tables &groupvar*&dependentvar / chisq;
+	tables &groupvar*&var/chisq;
 	ods output ChiSq=chisq;
 run;
 
@@ -54,7 +52,7 @@ data &out;
 	set chisq(firstobs=1 obs=1);
 	length variable $30;
 	length test $20;
-	variable="&dependentvar";
+	variable="&var";
 	Pvalue=put(Prob, pvalue6.4);
 	test='Chi-Square';
 	keep variable Pvalue test;
